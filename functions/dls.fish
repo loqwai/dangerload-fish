@@ -12,6 +12,4 @@ function dangerload -a include_file --description "does the opposite of .gitigno
     for i in (functions)
         contains $i $_dls_old_functions; or set -a _dls_new_functions $i
     end
-    echo "new functions:"
-    echo $_dls_new_functions    
 end
