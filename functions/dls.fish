@@ -31,10 +31,15 @@ function dangerload --description "dangerously sources whatever's in ./scripts/d
 $old_func_header
     functions --erase $random_id
     functions -c $n $random_id
-    source $include_file
+    source $include_file 2>/dev/null; or begin
+        echo \"$n can't find $include_file to reload itself. Aborting.\"
+        functions --erase $random_id
+        return 1
+    end
     $n \$argv
     functions --erase $n
     functions -c $random_id $n
+    functions --erase $random_id
 $old_func_footer
         "
         eval $new_func
@@ -43,7 +48,6 @@ end
 
 function dangerunload
     for f in $_dls_new_functions
-        echo "erasing $f"
         functions --erase $f
     end
 end
