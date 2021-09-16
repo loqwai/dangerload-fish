@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 function dangerload --description "dangerously sources whatever's in ./scripts/dangerload.fish"
-    echo "dangerloading"
+    # echo "dangerloading"
     set include_file ./scripts/dangerload.fish
     dangerunload    
 
@@ -15,40 +15,49 @@ function dangerload --description "dangerously sources whatever's in ./scripts/d
     end
 
     for n in $_dls_new_functions
-        set old_func (functions $n)
-        set old_func_header $old_func[2]
-        set old_func_footer $old_func[-1]
-        set old_func_body $old_func[3..-1]
         
+        set -l old_func (functions $n)
 
-        set old_func_header_pieces (string split " " $old_func_header)
-
-        set  -la hidden_func_header $old_func_header_pieces[1]
-
-        set -la hidden_func_header "_$old_func_header_pieces[2]"
-        set -la hidden_func_header $old_func_header_pieces[3..-2]
-        
-        set hidden_func_header (string join ' ' $hidden_func_header)
-
-        set -e new_func
-        set -a new_func "$old_func_header"
-
-        set -a new_func $hidden_func_header        
-        set -a new_func (string join \n $old_func_body)
-        set -a new_func "dangerload"
-        set -a new_func "_$n \$argv "
-        set -a new_func "$old_func_footer"
-        echo (count $new_func)
-        functions --erase $old_func_header
-        string join \n $new_func
-        # echo -e $new_body
+        set -l  old_func_header $old_func[2]
+        set -l  old_func_body $old_func[3..-1]
+        set  -l old_func_footer $old_func[-1]    
 
 
+        set -l -e new_func        
+        set -l -a new_func "$old_func_header"
+        set -l -a new_func "functions --erase _$n"
+        set -l -a new_func "functions -c $n _$n"
+        set -l -a new_func \t"source $include_file"
+
+        set -l -a new_func \t"$n \$argv"
+        set -l -a new_func "echo hey there"
+        set -l -a new_func "functions --erase $n"
+        set -l -a new_func "functions -c _$n $n"
+        set -l -a new_func $old_func_footer
+
+        # set -l -a new_func (string join \n $old_func_body)
+        # set -l -a new_func "dangerload"
+        # set -l -a new_func "_$n \$argv "
+        # set -l -a new_func "$old_func_footer"
+  
+        set finished_new_func (string join ';' $new_func)
+        echo $finished_new_func
+        echo $finished_new_func | source -
+        functions $n
+    
     end
 end
 
 function dangerunload
     for f in $_dls_new_functions
+        echo "erasing $f"
         functions --erase $f
     end
 end
+
+
+function main
+    dangerload
+end
+
+status is-interactive; or main

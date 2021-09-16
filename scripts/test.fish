@@ -1,2 +1,9 @@
 #!/usr/bin/env fish
-source ./functions/*; functions --erase hello-world; dangerload
+echo "before"
+functions hello-world
+
+./functions/dls.fish
+
+echo "after"
+
+functions hello-world
