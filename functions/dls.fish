@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
-function dangerload --description "dangerously sources whatever's in ./scripts/dangerload.fish"
-    # echo "dangerloading"
+function dangerload -v PWD --description "dangerously sources whatever's in ./scripts/dangerload.fish"
+    echo "dangerloading"
     set include_file ./scripts/dangerload.fish
     dangerunload    
 
@@ -8,36 +8,37 @@ function dangerload --description "dangerously sources whatever's in ./scripts/d
     set -g _dls_old_functions (functions)
    
     test -f $include_file; or begin
-        echo "I can't find $include_file!"
+        # echo "I can't find $include_file!"
         return 1
-    end       
+    end    
+
     source $include_file
 
     for i in (functions)
         contains $i $_dls_old_functions; or set -ag _dls_new_functions $i
     end
 
-    for n in $_dls_new_functions
-        
-        set -l old_func (functions $n)
+    echo "dangerloading:"
+    for function_name in $_dls_new_functions        
+         echo " $function_name"
+        set -l old_func (functions $function_name)
 
         set -l  old_func_header $old_func[2]
         set -l old_func_footer $old_func[-1]    
-        set random_id "_dls_temporary_function_"(random 0 (math '4 * 1024 * 1024 * 1024'))"_$n"
-        echo $random_id
+        set random_id "_dls_temporary_function_"(random 0 (math '4 * 1024 * 1024 * 1024'))"_$function_name"
 
         set -l -e new_func        
         set -l -a new_func "
 $old_func_header
     functions --erase $random_id
-    functions -c $n $random_id
+    functions -c $function_name $random_id
     source $include_file 2>/dev/null; or begin
-        echo \"$n can't find $include_file to reload itself. Aborting.\"
+        echo \"$function_name can't find $include_file to reload itself. Aborting.\"
         functions --erase $random_id
         return 1
     end
-    $n \$argv
-    functions --erase $n
+    $function_name \$argv
+    functions --erase $function_name
     functions -c $random_id $n
     functions --erase $random_id
 $old_func_footer
@@ -48,6 +49,11 @@ end
 
 function dangerunload
     for f in $_dls_new_functions
+        echo "dangerload: dangerunloading $f"
         functions --erase $f
     end
+end
+
+function dls
+    echo $_dls_new_functions
 end
