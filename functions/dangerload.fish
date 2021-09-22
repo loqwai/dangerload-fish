@@ -29,7 +29,7 @@ function dangerload -v PWD --description "dangerously sources whatever's in ./sc
         set -l -a new_func "
 $old_func_header
     functions --erase $random_id
-    functions --copy $function_name $random_id
+    functions -c $function_name $random_id
     source $include_file 2>/dev/null; or begin
         echo \"$function_name can't find $include_file to reload itself. Aborting.\"
         functions --erase $random_id
@@ -37,7 +37,7 @@ $old_func_header
     end
     $function_name \$argv
     functions --erase $function_name
-    functions --copy $random_id $function_name
+    functions -c $random_id $function_name
     functions --erase $random_id
 $old_func_footer
         "
