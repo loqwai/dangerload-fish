@@ -39,7 +39,7 @@ $old_func_header
     end
     $function_name \$argv
     functions --erase $function_name
-    functions -c $random_id $n
+    functions -c $random_id $function_name
     functions --erase $random_id
 $old_func_footer
         "
