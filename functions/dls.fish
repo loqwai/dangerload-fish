@@ -1,6 +1,5 @@
 #!/usr/bin/env fish
 function dangerload -v PWD --description "dangerously sources whatever's in ./scripts/dangerload.fish"
-    echo "dangerloading"
     set include_file ./scripts/dangerload.fish
     dangerunload    
 
@@ -18,9 +17,8 @@ function dangerload -v PWD --description "dangerously sources whatever's in ./sc
         contains $i $_dls_old_functions; or set -ag _dls_new_functions $i
     end
 
-    echo "dangerloading:"
     for function_name in $_dls_new_functions        
-         echo " $function_name"
+         echo -n " +$function_name"
         set -l old_func (functions $function_name)
 
         set -l  old_func_header $old_func[2]
@@ -48,8 +46,9 @@ $old_func_footer
 end
 
 function dangerunload
+    echo -n "dangerload: "
     for f in $_dls_new_functions
-        echo "dangerload: dangerunloading $f"
+        echo -n " -$f"
         functions --erase $f
     end
 end
