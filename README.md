@@ -49,6 +49,4 @@ hi-world
 
 In the above example. dangerload will make sure that the `hi-world` function is up to date with the `hi-world` function defiled in `dangerload.fish` by dangerously sourcing the file again before executing.
 
-I usually use `./scripts/dangerload.fish` to source other files in my project that define functions related to that project.
-
 
