@@ -47,6 +47,6 @@ hi-world
 # shell will print "hi-world: command not found"
 ```
 
-In the above example. dangerload will make sure that the `hi-world` function is up to date with the `hi-world` function defiled in `dangerload.fish` by dangerously sourcing the file again before executing.
+In the above example. dangerload will make sure that the `hi-world` function is up to date with the `hi-world` function defined in `dangerload.fish` by dangerously sourcing the file again before executing.
 
 
